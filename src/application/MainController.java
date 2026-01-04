@@ -17,6 +17,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import java.io.*;
 
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
+
 public class MainController {
 
     @FXML
@@ -94,7 +98,7 @@ public class MainController {
         } else {
             try {
                 JSONObject jsonObject = new JSONObject(input);
-                outputArea.setText(jsonToXmlManual(jsonObject, 0));
+                outputArea.setText(jsonToXmlManual(jsonObject, 0, "root"));
             } catch (Exception e) {
                 outputArea.setText("Erreur : JSON invalide (manuel)");
             }
@@ -130,84 +134,93 @@ public class MainController {
         }
     }
 
-    private String xmlToJsonManual(String xml) {
-        String cleanXml = xml.replaceAll("<\\?.*?\\?>", "")
-                             .replaceAll("<!DOCTYPE.*?>", "")
-                             .replaceAll("(?s)", "")
-                             .trim();
+   
 
-        return "{\n" + formatXmlNode(cleanXml, 1) + "\n}";
+    private String xmlToJsonManual(String xml) throws Exception {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringComments(true);
+        factory.setIgnoringElementContentWhitespace(true);
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(xml)));
+
+        Element root = doc.getDocumentElement();
+        JSONObject json = new JSONObject();
+
+        json.put(root.getTagName(), elementToJson(root));
+
+        return json.toString(4);
     }
+    
+    private Object elementToJson(Element element) {
 
-    private String formatXmlNode(String xml, int indent) {
-        StringBuilder sb = new StringBuilder();
-        String indentStr = "    ".repeat(indent);
-        String remaining = xml.trim();
+        NodeList children = element.getChildNodes();
+        JSONObject obj = new JSONObject();
+        boolean hasElementChild = false;
 
-        while (!remaining.isEmpty() && remaining.startsWith("<")) {
-            int tagStart = remaining.indexOf("<");
-            int tagEnd = remaining.indexOf(">");
-            if (tagStart == -1 || tagEnd == -1) break;
+        for (int i = 0; i < children.getLength(); i++) {
+            Node node = children.item(i);
 
-            String tagName = remaining.substring(tagStart + 1, tagEnd).split("\\s+")[0].replace("/", "");
-            String closeTag = "</" + tagName + ">";
-            int closeIndex = remaining.indexOf(closeTag);
+            if (node instanceof Element) {
+                hasElementChild = true;
+                Element child = (Element) node;
+                String name = child.getTagName();
+                Object value = elementToJson(child);
 
-            if (closeIndex != -1) {
-                String content = remaining.substring(tagEnd + 1, closeIndex).trim();
-                sb.append(indentStr).append("\"").append(tagName).append("\": ");
-
-                if (content.startsWith("<")) {
-                    sb.append("{\n").append(formatXmlNode(content, indent + 1))
-                      .append("\n").append(indentStr).append("}");
+                if (obj.has(name)) {
+                    if (!(obj.get(name) instanceof JSONArray)) {
+                        JSONArray arr = new JSONArray();
+                        arr.put(obj.get(name));
+                        obj.put(name, arr);
+                    }
+                    ((JSONArray) obj.get(name)).put(value);
                 } else {
-                    sb.append("\"").append(content.replace("\"", "\\\"")).append("\"");
+                    obj.put(name, value);
                 }
-
-                sb.append(",\n");
-                remaining = remaining.substring(closeIndex + closeTag.length()).trim();
-            } else {
-                remaining = remaining.substring(tagEnd + 1).trim();
             }
         }
 
-        if (sb.length() > 2) sb.setLength(sb.length() - 2); 
-        return sb.toString();
+        if (!hasElementChild) {
+            return element.getTextContent().trim();
+        }
+
+        return obj;
     }
 
-    private String jsonToXmlManual(Object json, int indent) {
-        StringBuilder sb = new StringBuilder();
 
-        String indentStr = "";
-        for (int i = 0; i < indent; i++) indentStr += "    ";
+
+    private String jsonToXmlManual(Object json, int indent, String tagName) {
+        StringBuilder sb = new StringBuilder();
+        String indentStr = "    ".repeat(indent);
 
         if (json instanceof JSONObject) {
             JSONObject obj = (JSONObject) json;
-            Iterator<?> keys = obj.keys();
+            Iterator<String> keys = obj.keys();
 
             while (keys.hasNext()) {
-                String key = (String) keys.next();
+                String key = keys.next();
                 Object value = obj.get(key);
 
                 sb.append(indentStr).append("<").append(key).append(">\n");
-                sb.append(jsonToXmlManual(value, indent + 1));
+                sb.append(jsonToXmlManual(value, indent + 1, key));
                 sb.append(indentStr).append("</").append(key).append(">\n");
             }
         }
         else if (json instanceof JSONArray) {
             JSONArray arr = (JSONArray) json;
+
             for (int i = 0; i < arr.length(); i++) {
-                sb.append(jsonToXmlManual(arr.get(i), indent));
+                sb.append(indentStr).append("<").append(tagName).append(">\n");
+                sb.append(jsonToXmlManual(arr.get(i), indent + 1, tagName));
+                sb.append(indentStr).append("</").append(tagName).append(">\n");
             }
         }
         else {
             sb.append(indentStr)
-              .append(json != null ? json.toString() : "")
+              .append(json.toString())
               .append("\n");
         }
-
         return sb.toString();
     }
-
-
 }

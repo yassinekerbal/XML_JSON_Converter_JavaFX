@@ -11,9 +11,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			System.out.println(
-				    getClass().getResource("logo.jpeg")
-				);
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("MainView.fxml"));
 			Scene scene = new Scene(root,400,400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
