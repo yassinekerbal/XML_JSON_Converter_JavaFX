@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="550.0" prefWidth="750.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+    <fx:define>
+        <ToggleGroup fx:id="methodGroup" />
+    </fx:define>
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-width: 0 0 1 0;">
+            <children>
+                <ImageView fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@logo.jpeg" />
+                    </image>
+                </ImageView>
+                <Label text="XML → JSON Converter" textFill="#2c3e50">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                </Label>
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <HBox spacing="20.0">
+            <children>
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Input:"><font><Font name="System Bold" size="14.0" /></font></Label>
+                        <TextArea fx:id="inputArea" promptText="Coller XML ou JSON ici..." style="-fx-text-fill: #2980b9;" VBox.vgrow="ALWAYS" />
+                    </children>
+                </VBox>
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Output:"><font><Font name="System Bold" size="14.0" /></font></Label>
+                        <TextArea fx:id="outputArea" editable="false" promptText="Le résultat apparaîtra ici..." VBox.vgrow="ALWAYS" />
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </HBox>
+    </center>
+    <bottom>
+        <VBox spacing="10.0">
+            <children>
+                <HBox alignment="CENTER" spacing="20.0">
+                    <children>
+                        <Label text="Méthode :" />
+                        <RadioButton fx:id="apiButton" selected="true" text="Avec API" toggleGroup="$methodGroup" />
+                        <RadioButton fx:id="manualButton" text="Sans API" toggleGroup="$methodGroup" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" spacing="15.0">
+                    <children>
+                        <Button onAction="#loadXml" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" text="Load XML" />
+                        <Button onAction="#loadJson" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;" text="Load JSON" />
+                        <Button onAction="#convertXmlToJson" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: linear-gradient(#3498db, #2980b9); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Convert XML → JSON" />
+                        <Button onAction="#convertJsonToXml" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: linear-gradient(#3498db, #2980b9); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Convert JSON → XML" />
+                    </children>
+                    <padding>
+                        <Insets bottom="20.0" top="10.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>
