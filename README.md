@@ -74,7 +74,8 @@ La vidéo présente l'utilisation de l'application en **5 minutes** :
 * Choix des méthodes avec/sans API
 * Résultat affiché en temps réel
 
- Regardez la vidéo de démonstration du projet : https://drive.google.com/drive/folders/1m4lSZ93rtLj5CkRgmpnZstbOXDy_SU0F?usp=drive_link
+ Regardez la vidéo de démonstration du projet :
+ https://docs.google.com/videos/d/1GVZ-5ZZ52WZoDM4lB19p0XYZnnGjteMT0tMnmqjyM3I/edit?usp=sharing
 
 ## Prérequis
 
