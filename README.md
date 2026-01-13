@@ -75,7 +75,8 @@ La vidéo présente l'utilisation de l'application en **5 minutes** :
 * Résultat affiché en temps réel
 
  Regardez la vidéo de démonstration du projet :
- https://docs.google.com/videos/d/1GVZ-5ZZ52WZoDM4lB19p0XYZnnGjteMT0tMnmqjyM3I/edit?usp=sharing
+ v1: https://docs.google.com/videos/d/1bRD28tmlmuue3dSYPIzUPEiEgLjVC0RmboApfuiPFdM/edit?usp=sharing
+ v2: https://docs.google.com/videos/d/1GVZ-5ZZ52WZoDM4lB19p0XYZnnGjteMT0tMnmqjyM3I/edit?usp=sharing
 
 ## Prérequis
 
